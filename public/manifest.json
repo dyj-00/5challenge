@@ -1,0 +1,16 @@
+{
+  "name": "5만원 챌린지 - 페이스메이커",
+  "short_name": "5만챌",
+  "description": "자매 협동 & 솔로 5만 원 일주일 버티기 소비 페이스메이커 웹 앱",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
