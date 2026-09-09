@@ -27,27 +27,27 @@ export default function DualGaugeCard() {
       <div className="absolute -top-10 -right-10 w-36 h-36 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Card Header & Status */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <span className="text-2xl">⏱️</span>
-          <div>
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start gap-2.5 min-w-0">
+          <span className="text-2xl mt-0.5 flex-shrink-0">⏱️</span>
+          <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <h2 className="font-extrabold text-sm text-slate-900">
+              <h2 className="font-extrabold text-sm text-slate-900 whitespace-nowrap">
                 {myMetrics.elapsedDays}일차 소비 페이스
               </h2>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                 오늘 {myMetrics.todayFormatted} ({myMetrics.todayDayOfWeekShort})
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-              <span className="font-bold text-slate-700">시작 기준일: {myMetrics.startDateFormatted} ({myMetrics.startDayOfWeekName})</span>
-              <span className="text-slate-400 font-normal"> · {myMetrics.cycleRangeText}</span>
-            </p>
+            <div className="text-xs text-slate-500 font-medium mt-1 space-y-0.5">
+              <div>시작 기준일: {myMetrics.startDateFormatted}({myMetrics.startDayOfWeekShort})</div>
+              <div>기간: {myMetrics.cycleRangeText}</div>
+            </div>
           </div>
         </div>
 
         {/* Global Pace Badge */}
-        <div className={`px-2.5 py-1 rounded-full text-xs font-extrabold flex items-center gap-1 border ${
+        <div className={`px-2.5 py-1 rounded-full text-xs font-extrabold flex items-center gap-1 border whitespace-nowrap flex-shrink-0 ${
           myMetrics.paceStatus === 'safe'
             ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
             : myMetrics.paceStatus === 'warning'
@@ -55,7 +55,7 @@ export default function DualGaugeCard() {
             : 'bg-rose-50 border-rose-200 text-rose-700'
         }`}>
           <span>{myMetrics.statusEmoji}</span>
-          <span>{myMetrics.paceStatus === 'safe' ? '안전 페이스' : myMetrics.paceStatus === 'warning' ? '주의' : '위험'}</span>
+          <span>{myMetrics.paceStatus === 'safe' ? '안전' : myMetrics.paceStatus === 'warning' ? '주의' : '위험'}</span>
         </div>
       </div>
 
