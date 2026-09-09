@@ -34,9 +34,6 @@ export default function TopHeader({ onOpenProfilePicker }: TopHeaderProps) {
           <h1 className="font-extrabold text-sm text-slate-900 leading-tight">
             {formatCurrency(challenge.budget_per_person)} 챌린지
           </h1>
-          <span className="inline-flex items-center text-[10px] text-slate-500 gap-1 font-semibold">
-            로그인한 계정으로 기록 저장
-          </span>
         </div>
       </div>
 

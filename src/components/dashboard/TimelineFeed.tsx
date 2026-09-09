@@ -37,9 +37,15 @@ export default function TimelineFeed() {
           <div className="text-4xl">🎉</div>
           <h4 className="font-bold text-sm text-slate-800">아직 등록된 지출이 없어요!</h4>
           <p className="text-xs text-slate-500">
-            {viewMode === 'solo'
-              ? '하단 [+] 버튼을 눌러 나의 첫 지출이나 #무지출 내역을 기록해 보세요.'
-              : '하단 [+] 버튼을 눌러 지출 내역을 공유해 보세요.'}
+            {viewMode === 'solo' ? (
+              <>
+                하단 [+] 버튼을 눌러
+                <br />
+                나의 첫 지출이나 #무지출 내역을 기록해 보세요.
+              </>
+            ) : (
+              '하단 [+] 버튼을 눌러 지출 내역을 공유해 보세요.'
+            )}
           </p>
         </div>
       ) : (
