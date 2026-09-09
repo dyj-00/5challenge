@@ -59,4 +59,15 @@ export interface PacemakerMetrics {
   paceStatus: PaceStatus;
   statusMessage: string;
   statusEmoji: string;
+  // Date & day of week properties
+  startDate: Date;
+  startDateFormatted: string;
+  startDayOfWeekName: string;
+  startDayOfWeekShort: string;
+  endDateFormatted: string;
+  endDayOfWeekShort: string;
+  todayFormatted: string;
+  todayDayOfWeekName: string;
+  todayDayOfWeekShort: string;
+  cycleRangeText: string;
 }

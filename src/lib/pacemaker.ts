@@ -1,22 +1,61 @@
 import { Challenge, Expense, PacemakerMetrics, PaceStatus, UserRole } from '@/types';
 
+export function getDayOfWeekName(dayIndex: number): string {
+  const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+  return days[(dayIndex + 7) % 7] || '월요일';
+}
+
+export function getDayOfWeekShort(dayIndex: number): string {
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  return days[(dayIndex + 7) % 7] || '월';
+}
+
 export function calculatePacemakerMetrics(
   challenge: Challenge,
   expenses: Expense[],
   userId: UserRole
 ): PacemakerMetrics {
   const totalBudget = challenge.budget_per_person || 50000;
-  const startDate = new Date(challenge.current_start_date || new Date().toISOString());
+  const rawStartDate = new Date(challenge.current_start_date || new Date().toISOString());
   const now = new Date();
 
-  // Calculate elapsed days (1 to 7)
-  const diffTime = Math.max(0, now.getTime() - startDate.getTime());
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-  const elapsedDays = Math.min(7, Math.max(1, diffDays));
+  // Normalize dates to local midnight (00:00:00.000) for exact calendar day comparison
+  const startMidnight = new Date(rawStartDate.getFullYear(), rawStartDate.getMonth(), rawStartDate.getDate());
+  const nowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  // Filter expenses strictly for the requested user within current challenge cycle
+  // Total calendar days elapsed since original start_date (Day 1 on start date)
+  const diffTime = Math.max(0, nowMidnight.getTime() - startMidnight.getTime());
+  const totalDaysElapsed = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  // Determine current 7-day cycle index (0, 1, 2, ...)
+  const cycleIndex = Math.floor(totalDaysElapsed / 7);
+
+  // Active 7-day cycle start & end date (Midnight)
+  const cycleStartDate = new Date(startMidnight.getTime() + cycleIndex * 7 * 24 * 60 * 60 * 1000);
+  const cycleEndDate = new Date(cycleStartDate.getTime() + 6 * 24 * 60 * 60 * 1000);
+
+  // Elapsed days in active cycle: 1 to 7
+  const elapsedDays = Math.min(7, Math.max(1, (totalDaysElapsed % 7) + 1));
+
+  // Date formatting helpers
+  const formatShortDate = (d: Date) => `${d.getMonth() + 1}/${d.getDate()}`;
+
+  const startDateFormatted = formatShortDate(cycleStartDate);
+  const startDayOfWeekName = getDayOfWeekName(cycleStartDate.getDay());
+  const startDayOfWeekShort = getDayOfWeekShort(cycleStartDate.getDay());
+
+  const endDateFormatted = formatShortDate(cycleEndDate);
+  const endDayOfWeekShort = getDayOfWeekShort(cycleEndDate.getDay());
+
+  const todayFormatted = formatShortDate(now);
+  const todayDayOfWeekName = getDayOfWeekName(now.getDay());
+  const todayDayOfWeekShort = getDayOfWeekShort(now.getDay());
+
+  const cycleRangeText = `${startDateFormatted}(${startDayOfWeekShort}) ~ ${endDateFormatted}(${endDayOfWeekShort})`;
+
+  // Filter expenses strictly for the requested user within current 7-day cycle
   const userExpenses = expenses.filter(
-    (exp) => exp.user_id === userId && new Date(exp.spent_at) >= startDate
+    (exp) => exp.user_id === userId && new Date(exp.spent_at) >= cycleStartDate
   );
 
   const totalSpent = userExpenses.reduce((sum, exp) => sum + exp.amount, 0);
@@ -25,10 +64,16 @@ export function calculatePacemakerMetrics(
   const dailyTargetBudget = Math.round(totalBudget / 7);
   const targetRemainingBudget = Math.max(0, Math.round(totalBudget - dailyTargetBudget * elapsedDays));
 
-  // Today's spending
-  const todayStr = now.toISOString().split('T')[0];
+  // Today's spending (compared by local calendar date)
   const todaySpent = userExpenses
-    .filter((exp) => exp.spent_at.startsWith(todayStr))
+    .filter((exp) => {
+      const expDate = new Date(exp.spent_at);
+      return (
+        expDate.getFullYear() === now.getFullYear() &&
+        expDate.getMonth() === now.getMonth() &&
+        expDate.getDate() === now.getDate()
+      );
+    })
     .reduce((sum, exp) => sum + exp.amount, 0);
 
   const balanceBeforeToday = remainingBudget + todaySpent;
@@ -67,14 +112,19 @@ export function calculatePacemakerMetrics(
     paceStatus,
     statusMessage,
     statusEmoji,
+    startDate: cycleStartDate,
+    startDateFormatted,
+    startDayOfWeekName,
+    startDayOfWeekShort,
+    endDateFormatted,
+    endDayOfWeekShort,
+    todayFormatted,
+    todayDayOfWeekName,
+    todayDayOfWeekShort,
+    cycleRangeText,
   };
 }
 
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('ko-KR').format(amount) + '원';
-}
-
-export function getDayOfWeekName(dayIndex: number): string {
-  const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-  return days[dayIndex % 7] || '월요일';
 }

@@ -28,14 +28,20 @@ export default function DualGaugeCard() {
 
       {/* Card Header & Status */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">⏱️</span>
+        <div className="flex items-center gap-2.5">
+          <span className="text-2xl">⏱️</span>
           <div>
-            <h2 className="font-extrabold text-sm text-slate-900">
-              {myMetrics.elapsedDays}일차 소비 페이스
-            </h2>
-            <p className="text-[11px] text-slate-500 font-medium">
-              7일 예산 {formatCurrency(myMetrics.totalBudget)} 기준
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <h2 className="font-extrabold text-sm text-slate-900">
+                {myMetrics.elapsedDays}일차 소비 페이스
+              </h2>
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                오늘 {myMetrics.todayFormatted} ({myMetrics.todayDayOfWeekShort})
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+              <span className="font-bold text-slate-700">시작 기준일: {myMetrics.startDateFormatted} ({myMetrics.startDayOfWeekName})</span>
+              <span className="text-slate-400 font-normal"> · {myMetrics.cycleRangeText}</span>
             </p>
           </div>
         </div>

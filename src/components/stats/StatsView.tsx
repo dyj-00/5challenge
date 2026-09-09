@@ -34,7 +34,7 @@ export default function StatsView() {
         <div>
           <h2 className="font-extrabold text-base text-slate-900">나의 소비 분석 리포트</h2>
           <p className="text-xs text-emerald-600 font-bold">
-            {accountLabel} 기준 · {metrics.elapsedDays}일차 지출 통계
+            {accountLabel} · 기준일 {metrics.startDateFormatted}({metrics.startDayOfWeekShort}) · {metrics.elapsedDays}일차 지출 통계
           </p>
         </div>
       </div>

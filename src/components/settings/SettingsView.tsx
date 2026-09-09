@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import { useChallengeContext } from '@/context/ChallengeContext';
-import { formatCurrency } from '@/lib/pacemaker';
+import { calculatePacemakerMetrics, formatCurrency } from '@/lib/pacemaker';
 
 export default function SettingsView() {
-  const { challenge, updateSettings, resetChallenge } = useChallengeContext();
+  const { challenge, expenses, currentUser, updateSettings, resetChallenge } = useChallengeContext();
+  const metrics = calculatePacemakerMetrics(challenge, expenses, currentUser);
 
   const [customBudget, setCustomBudget] = useState<string>(challenge.budget_per_person.toString());
   const [selectedDay, setSelectedDay] = useState<number>(challenge.start_day_of_week);
@@ -111,6 +112,13 @@ export default function SettingsView() {
         <p className="text-xs text-slate-500 font-medium">
           설정한 요일 기준으로 7일간의 권장 지출선이 자동 갱신됩니다.
         </p>
+
+        <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-3 flex items-center justify-between text-xs">
+          <span className="text-slate-600 font-medium">현재 챌린지 시작 기준일</span>
+          <span className="font-black text-emerald-800">
+            {metrics.startDateFormatted} ({metrics.startDayOfWeekName})
+          </span>
+        </div>
 
         <div className="grid grid-cols-4 gap-1.5">
           {daysOfWeek.map((day) => (
