@@ -22,7 +22,7 @@ export default function DualGaugeCard() {
   const myEmoji = currentUser === 'unni' ? '🎀' : '🐻';
 
   return (
-    <div className="bg-white border border-slate-200/80 rounded-3xl p-5 space-y-4 shadow-md relative overflow-hidden">
+    <div className="bg-white border border-slate-200/80 rounded-3xl pt-3.5 pb-5 px-5 space-y-3 shadow-md relative overflow-hidden">
       {/* Background Glow */}
       <div className="absolute -top-10 -right-10 w-36 h-36 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -32,10 +32,10 @@ export default function DualGaugeCard() {
           <span className="text-2xl mt-0.5 flex-shrink-0">⏱️</span>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <h2 className="font-extrabold text-sm text-slate-900 whitespace-nowrap" suppressHydrationWarning>
+              <h2 className="font-extrabold text-base text-slate-900 whitespace-nowrap" suppressHydrationWarning>
                 {myMetrics.elapsedDays}일차 소비 페이스
               </h2>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap" suppressHydrationWarning>
+              <span className="text-[13px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap" suppressHydrationWarning>
                 오늘 {myMetrics.todayFormatted} ({myMetrics.todayDayOfWeekShort})
               </span>
             </div>
@@ -47,13 +47,12 @@ export default function DualGaugeCard() {
         </div>
 
         {/* Global Pace Badge */}
-        <div className={`px-2.5 py-1 rounded-full text-xs font-extrabold flex items-center gap-1 border whitespace-nowrap flex-shrink-0 ${
-          myMetrics.paceStatus === 'safe'
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-            : myMetrics.paceStatus === 'warning'
+        <div className={`px-2.5 py-1 rounded-full text-xs font-extrabold flex items-center gap-1 border whitespace-nowrap flex-shrink-0 ${myMetrics.paceStatus === 'safe'
+          ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+          : myMetrics.paceStatus === 'warning'
             ? 'bg-amber-50 border-amber-200 text-amber-700'
             : 'bg-rose-50 border-rose-200 text-rose-700'
-        }`}>
+          }`}>
           <span>{myMetrics.statusEmoji}</span>
           <span>{myMetrics.paceStatus === 'safe' ? '안전' : myMetrics.paceStatus === 'warning' ? '주의' : '위험'}</span>
         </div>
@@ -104,13 +103,12 @@ export default function DualGaugeCard() {
           {/* Clean Progress Bar Container */}
           <div className="relative w-full h-5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200 shadow-inner">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                myMetrics.paceStatus === 'safe'
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
-                  : myMetrics.paceStatus === 'warning'
+              className={`h-full rounded-full transition-all duration-500 ${myMetrics.paceStatus === 'safe'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
+                : myMetrics.paceStatus === 'warning'
                   ? 'bg-gradient-to-r from-amber-500 to-yellow-400'
                   : 'bg-gradient-to-r from-rose-500 to-red-400'
-              }`}
+                }`}
               style={{ width: `${Math.max(0, Math.min(100, (myMetrics.remainingBudget / myMetrics.totalBudget) * 100))}%` }}
             />
           </div>
@@ -139,11 +137,10 @@ function GaugeItem({ name, emoji, remaining, total, spent, status, isMe }: Gauge
   const percent = Math.max(0, Math.min(100, (remaining / total) * 100));
 
   return (
-    <div className={`p-3.5 rounded-2xl border flex flex-col justify-between space-y-2.5 transition-all ${
-      isMe
-        ? 'bg-slate-50/90 border-slate-300 shadow-sm'
-        : 'bg-slate-50/40 border-slate-200'
-    }`}>
+    <div className={`p-3.5 rounded-2xl border flex flex-col justify-between space-y-2.5 transition-all ${isMe
+      ? 'bg-slate-50/90 border-slate-300 shadow-sm'
+      : 'bg-slate-50/40 border-slate-200'
+      }`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5 text-xs font-extrabold text-slate-800">
           <span>{emoji}</span>
@@ -168,13 +165,12 @@ function GaugeItem({ name, emoji, remaining, total, spent, status, isMe }: Gauge
       {/* Progress Bar */}
       <div className="relative w-full h-3.5 bg-slate-200/80 rounded-full overflow-hidden p-0.5 border border-slate-300/80 shadow-inner">
         <div
-          className={`h-full rounded-full transition-all duration-500 ${
-            status === 'safe'
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
-              : status === 'warning'
+          className={`h-full rounded-full transition-all duration-500 ${status === 'safe'
+            ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
+            : status === 'warning'
               ? 'bg-gradient-to-r from-amber-500 to-yellow-400'
               : 'bg-gradient-to-r from-rose-500 to-red-400'
-          }`}
+            }`}
           style={{ width: `${percent}%` }}
         />
       </div>
