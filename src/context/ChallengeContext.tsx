@@ -28,8 +28,8 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUserRole] = useState<UserRole>('dongsaeng');
   const [viewMode, setViewModeState] = useState<ViewMode>('solo');
   const [challenge, setChallenge] = useState<Challenge>(LocalStore.getChallenge());
-  const [expenses, setExpenses] = useState<Expense[]>(LocalStore.getExpenses());
-  const [reactions, setReactions] = useState<Reaction[]>(LocalStore.getReactions());
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [reactions, setReactions] = useState<Reaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Trigger celebratory confetti
@@ -46,12 +46,19 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Load initial state
+  // Load initial state on client mount
   useEffect(() => {
     const role = LocalStore.getUserRole();
     const mode = LocalStore.getViewMode();
+    const localChallenge = LocalStore.getChallenge();
+    const localExpenses = LocalStore.getExpenses();
+    const localReactions = LocalStore.getReactions();
+
     setCurrentUserRole(role);
     setViewModeState(mode);
+    setChallenge(localChallenge);
+    setExpenses(localExpenses);
+    setReactions(localReactions);
 
     async function loadData() {
       if (isSupabaseConfigured && supabase) {

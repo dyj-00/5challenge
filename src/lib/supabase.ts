@@ -26,7 +26,7 @@ const DEFAULT_CHALLENGE: Challenge = {
   mode: 'solo',
   budget_per_person: 50000,
   start_day_of_week: 1, // Monday
-  current_start_date: new Date().toISOString(),
+  current_start_date: '2026-09-08T00:00:00.000Z',
   is_active: true,
 };
 
