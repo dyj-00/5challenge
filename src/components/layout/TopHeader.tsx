@@ -15,9 +15,9 @@ export default function TopHeader({ onOpenProfilePicker }: TopHeaderProps) {
   const getProfileBadge = (role: UserRole) => {
     switch (role) {
       case 'unni':
-        return { name: '언니 계정', emoji: '🎀', bg: 'bg-rose-100 text-rose-700 border-rose-200' };
+        return { name: '다운 계정', emoji: '🎀', bg: 'bg-rose-100 text-rose-700 border-rose-200' };
       default:
-        return { name: '동생 계정', emoji: '🐻', bg: 'bg-amber-100 text-amber-700 border-amber-200' };
+        return { name: '다영 계정', emoji: '🐻', bg: 'bg-amber-100 text-amber-700 border-amber-200' };
     }
   };
 

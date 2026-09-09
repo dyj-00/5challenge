@@ -24,7 +24,7 @@ export default function StatsView() {
 
   const sortedTags = Object.entries(tagTotals).sort((a, b) => b[1] - a[1]);
 
-  const accountLabel = currentUser === 'unni' ? '언니 계정 🎀' : '동생 계정 🐻';
+  const accountLabel = currentUser === 'unni' ? '다운 계정 🎀' : '다영 계정 🐻';
 
   return (
     <div className="space-y-4 animate-fade-in">

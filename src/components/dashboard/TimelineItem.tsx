@@ -17,9 +17,9 @@ export default function TimelineItem({ expense, reactions }: TimelineItemProps) 
 
   const getUserBadge = (role: UserRole) => {
     if (role === 'unni') {
-      return { name: '언니', emoji: '🎀', bg: 'bg-rose-100 text-rose-700' };
+      return { name: '다운', emoji: '🎀', bg: 'bg-rose-100 text-rose-700' };
     }
-    return { name: '동생', emoji: '🐻', bg: 'bg-amber-100 text-amber-700' };
+    return { name: '다영', emoji: '🐻', bg: 'bg-amber-100 text-amber-700' };
   };
 
   const userBadge = getUserBadge(expense.user_id);

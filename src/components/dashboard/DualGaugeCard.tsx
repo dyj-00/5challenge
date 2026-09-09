@@ -14,11 +14,11 @@ export default function DualGaugeCard() {
 
   // Compute metrics for sister in Duo Mode
   const sisterRole: UserRole = currentUser === 'unni' ? 'dongsaeng' : 'unni';
-  const sisterName = sisterRole === 'unni' ? '언니' : '동생';
+  const sisterName = sisterRole === 'unni' ? '다운' : '다영';
   const sisterEmoji = sisterRole === 'unni' ? '🎀' : '🐻';
   const sisterMetrics = calculatePacemakerMetrics(challenge, expenses, sisterRole);
 
-  const myRoleName = currentUser === 'unni' ? '언니(나)' : '동생(나)';
+  const myRoleName = currentUser === 'unni' ? '다운(나)' : '다영(나)';
   const myEmoji = currentUser === 'unni' ? '🎀' : '🐻';
 
   return (

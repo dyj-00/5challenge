@@ -12,13 +12,13 @@ export const supabase = isSupabaseConfigured
 
 // Preset Accounts
 export const PRESET_ACCOUNTS = [
-  { id: 'dongsaeng' as UserRole, name: '동생', avatar_emoji: '🐻', email: 'dongsaeng@sister.app' },
-  { id: 'unni' as UserRole, name: '언니', avatar_emoji: '🎀', email: 'unni@sister.app' },
+  { id: 'dongsaeng' as UserRole, name: '다영', avatar_emoji: '🐻', email: 'dongsaeng@sister.app' },
+  { id: 'unni' as UserRole, name: '다운', avatar_emoji: '🎀', email: 'unni@sister.app' },
 ];
 
 const DEFAULT_PROFILES: Profile[] = [
-  { id: 'dongsaeng', name: '동생', avatar_emoji: '🐻' },
-  { id: 'unni', name: '언니', avatar_emoji: '🎀' },
+  { id: 'dongsaeng', name: '다영', avatar_emoji: '🐻' },
+  { id: 'unni', name: '다운', avatar_emoji: '🎀' },
 ];
 
 const DEFAULT_CHALLENGE: Challenge = {
