@@ -43,7 +43,7 @@ export default function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProp
     }
   };
 
-  const accountName = currentUser === 'unni' ? '다운 계정 🎀' : '다영 계정 🐻';
+  const accountName = currentUser === 'unni' ? '다운 🎀' : '다영 🐻';
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-end justify-center animate-fade-in sm:p-4">

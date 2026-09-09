@@ -32,9 +32,9 @@ export default function ProfilePickerModal({ isOpen, onClose }: ProfilePickerMod
 
         <div className="text-center space-y-1">
           <div className="text-3xl">🔐</div>
-          <h2 className="text-lg font-extrabold text-slate-900">로그인 계정 전환</h2>
+          <h2 className="text-lg font-extrabold text-slate-900">프로필 선택</h2>
           <p className="text-xs text-slate-500 font-medium">
-            지출을 기록할 본인의 계정으로 로그인하세요.
+            지출을 기록할 본인의 프로필을 선택하세요.
           </p>
         </div>
 
@@ -54,10 +54,10 @@ export default function ProfilePickerModal({ isOpen, onClose }: ProfilePickerMod
                 <div className="text-2xl p-2 bg-white rounded-xl border border-slate-200">{acc.avatar_emoji}</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <span className="font-extrabold text-sm text-slate-900">{acc.name} 계정</span>
+                    <span className="font-extrabold text-sm text-slate-900">{acc.name}</span>
                     {isSelected && (
                       <span className="text-xs bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">
-                        현재 로그인됨
+                        현재 선택됨
                       </span>
                     )}
                   </div>

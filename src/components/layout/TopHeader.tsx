@@ -15,9 +15,9 @@ export default function TopHeader({ onOpenProfilePicker }: TopHeaderProps) {
   const getProfileBadge = (role: UserRole) => {
     switch (role) {
       case 'unni':
-        return { name: '다운 계정', emoji: '🎀', bg: 'bg-rose-100 text-rose-700 border-rose-200' };
+        return { name: '다운', emoji: '🎀', bg: 'bg-rose-100 text-rose-700 border-rose-200' };
       default:
-        return { name: '다영 계정', emoji: '🐻', bg: 'bg-amber-100 text-amber-700 border-amber-200' };
+        return { name: '다영', emoji: '🐻', bg: 'bg-amber-100 text-amber-700 border-amber-200' };
     }
   };
 
@@ -41,7 +41,7 @@ export default function TopHeader({ onOpenProfilePicker }: TopHeaderProps) {
       <button
         onClick={onOpenProfilePicker}
         className={`px-3 py-1.5 rounded-full border text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 shadow-sm ${profileInfo.bg}`}
-        title="계정 전환 / 로그인"
+        title="프로필 전환"
       >
         <span>{profileInfo.emoji}</span>
         <span>{profileInfo.name}</span>
