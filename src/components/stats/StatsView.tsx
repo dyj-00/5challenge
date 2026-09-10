@@ -8,11 +8,9 @@ export default function StatsView() {
   const { challenge, expenses, currentUser } = useChallengeContext();
   const metrics = calculatePacemakerMetrics(challenge, expenses, currentUser);
 
-  const startDate = new Date(challenge.current_start_date || new Date().toISOString());
-
   // Current cycle expenses strictly for the currently logged-in user
   const userExpenses = expenses.filter(
-    (exp) => exp.user_id === currentUser && new Date(exp.spent_at) >= startDate
+    (exp) => exp.user_id === currentUser && new Date(exp.spent_at) >= metrics.startDate
   );
 
   // Group by tag

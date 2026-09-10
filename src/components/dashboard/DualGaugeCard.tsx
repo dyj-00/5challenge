@@ -8,6 +8,11 @@ import { UserRole } from '@/types';
 export default function DualGaugeCard() {
   const { challenge, expenses, currentUser, viewMode } = useChallengeContext();
   const isDuoView = viewMode === 'duo';
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Compute metrics for current logged-in user
   const myMetrics = calculatePacemakerMetrics(challenge, expenses, currentUser);
@@ -32,14 +37,14 @@ export default function DualGaugeCard() {
           <span className="text-2xl mt-0.5 flex-shrink-0">⏱️</span>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <h2 className="font-extrabold text-base text-slate-900 whitespace-nowrap" suppressHydrationWarning>
+              <h2 className="font-extrabold text-base text-slate-900 whitespace-nowrap">
                 {myMetrics.elapsedDays}일차 소비 페이스
               </h2>
-              <span className="text-[13px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap" suppressHydrationWarning>
+              <span className="text-[13px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                 오늘 {myMetrics.todayFormatted} ({myMetrics.todayDayOfWeekShort})
               </span>
             </div>
-            <div className="text-xs text-slate-500 font-medium mt-1 space-y-0.5" suppressHydrationWarning>
+            <div className="text-xs text-slate-500 font-medium mt-1 space-y-0.5">
               <div>시작 기준일: {myMetrics.startDateFormatted}({myMetrics.startDayOfWeekShort})</div>
               <div>기간: {myMetrics.cycleRangeText}</div>
             </div>

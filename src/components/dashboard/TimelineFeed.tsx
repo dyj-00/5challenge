@@ -2,16 +2,16 @@
 
 import React from 'react';
 import { useChallengeContext } from '@/context/ChallengeContext';
+import { calculatePacemakerMetrics } from '@/lib/pacemaker';
 import TimelineItem from './TimelineItem';
 
 export default function TimelineFeed() {
   const { expenses, reactions, challenge, currentUser, viewMode } = useChallengeContext();
-
-  const startDate = new Date(challenge.current_start_date || new Date().toISOString());
+  const metrics = calculatePacemakerMetrics(challenge, expenses, currentUser);
 
   // Filter expenses for current week challenge cycle
   const currentExpenses = expenses.filter(
-    (exp) => new Date(exp.spent_at) >= startDate
+    (exp) => new Date(exp.spent_at) >= metrics.startDate
   );
 
   // In Solo mode, show ONLY current user's expenses!
