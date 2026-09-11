@@ -15,6 +15,10 @@ interface ChallengeContextType {
   reactions: Reaction[];
   isLoading: boolean;
   addExpense: (expenseData: { amount: number; memo: string; tag: string }) => Promise<void>;
+  updateExpense: (
+    id: string,
+    updatedData: { amount: number; memo: string; tag: string; spent_at?: string }
+  ) => Promise<void>;
   deleteExpense: (id: string) => Promise<void>;
   toggleReaction: (expenseId: string, emoji: '👏' | '🚨' | '☕' | '🎉') => Promise<void>;
   resetChallenge: (customBudget?: number, mode?: ViewMode, startDay?: number) => Promise<void>;
@@ -209,6 +213,46 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateExpense = async (
+    id: string,
+    updatedData: { amount: number; memo: string; tag: string; spent_at?: string }
+  ) => {
+    const updated = expenses.map((exp) => {
+      if (exp.id === id) {
+        return {
+          ...exp,
+          amount: updatedData.amount,
+          memo: updatedData.memo.trim() || updatedData.tag,
+          tag: updatedData.tag,
+          spent_at: updatedData.spent_at || exp.spent_at,
+        };
+      }
+      return exp;
+    });
+
+    setExpenses(updated);
+    LocalStore.saveExpenses(updated);
+
+    if (updatedData.tag === '#방어성공' || updatedData.tag === '#무지출') {
+      triggerConfetti();
+    }
+
+    if (isSupabaseConfigured && supabase) {
+      const target = updated.find((e) => e.id === id);
+      if (target) {
+        await supabase
+          .from('expenses')
+          .update({
+            amount: target.amount,
+            memo: target.memo,
+            tag: target.tag,
+            spent_at: target.spent_at,
+          })
+          .eq('id', id);
+      }
+    }
+  };
+
   const deleteExpense = async (id: string) => {
     const updated = expenses.filter((e) => e.id !== id);
     setExpenses(updated);
@@ -318,6 +362,7 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
         reactions,
         isLoading,
         addExpense,
+        updateExpense,
         deleteExpense,
         toggleReaction,
         resetChallenge,

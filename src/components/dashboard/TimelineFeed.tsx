@@ -1,12 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useChallengeContext } from '@/context/ChallengeContext';
 import { calculatePacemakerMetrics } from '@/lib/pacemaker';
+import { Expense } from '@/types';
 import TimelineItem from './TimelineItem';
+import EditExpenseModal from './EditExpenseModal';
 
 export default function TimelineFeed() {
   const { expenses, reactions, challenge, currentUser, viewMode } = useChallengeContext();
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+
   const metrics = calculatePacemakerMetrics(challenge, expenses, currentUser);
 
   // Filter expenses for current week challenge cycle
@@ -51,10 +55,23 @@ export default function TimelineFeed() {
       ) : (
         <div className="space-y-3">
           {filteredExpenses.map((exp) => (
-            <TimelineItem key={exp.id} expense={exp} reactions={reactions} />
+            <TimelineItem
+              key={exp.id}
+              expense={exp}
+              reactions={reactions}
+              onEdit={(expenseToEdit) => setEditingExpense(expenseToEdit)}
+            />
           ))}
         </div>
       )}
+
+      {/* Edit Expense Modal */}
+      <EditExpenseModal
+        isOpen={!!editingExpense}
+        onClose={() => setEditingExpense(null)}
+        expense={editingExpense}
+      />
     </div>
   );
 }
+

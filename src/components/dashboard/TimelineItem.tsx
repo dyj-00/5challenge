@@ -8,9 +8,10 @@ import { useChallengeContext } from '@/context/ChallengeContext';
 interface TimelineItemProps {
   expense: Expense;
   reactions: Reaction[];
+  onEdit?: (expense: Expense) => void;
 }
 
-export default function TimelineItem({ expense, reactions }: TimelineItemProps) {
+export default function TimelineItem({ expense, reactions, onEdit }: TimelineItemProps) {
   const { currentUser, toggleReaction, deleteExpense } = useChallengeContext();
 
   const isMyExpense = expense.user_id === currentUser;
@@ -51,13 +52,29 @@ export default function TimelineItem({ expense, reactions }: TimelineItemProps) 
             {dateFormatted} {timeFormatted}
           </span>
           {isMyExpense && (
-            <button
-              onClick={() => deleteExpense(expense.id)}
-              className="text-slate-400 hover:text-rose-500 text-xs p-1 transition-colors"
-              title="삭제"
-            >
-              ✕
-            </button>
+            <div className="flex items-center gap-1">
+              {onEdit && (
+                <button
+                  onClick={() => onEdit(expense)}
+                  className="text-slate-400 hover:text-emerald-600 text-xs px-1.5 py-0.5 rounded-lg hover:bg-slate-100 transition-colors font-bold flex items-center gap-0.5"
+                  title="수정"
+                >
+                  <span>✏️</span>
+                  <span className="text-[10px]">수정</span>
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  if (confirm('이 지출 내역을 삭제하시겠습니까?')) {
+                    deleteExpense(expense.id);
+                  }
+                }}
+                className="text-slate-400 hover:text-rose-500 text-xs p-1 transition-colors"
+                title="삭제"
+              >
+                ✕
+              </button>
+            </div>
           )}
         </div>
       </div>
