@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Expense } from '@/types';
 import { useChallengeContext } from '@/context/ChallengeContext';
 
@@ -13,11 +14,16 @@ interface EditExpenseModalProps {
 export default function EditExpenseModal({ isOpen, onClose, expense }: EditExpenseModalProps) {
   const { updateExpense, deleteExpense, currentUser } = useChallengeContext();
 
+  const [mounted, setMounted] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>('');
   const [memo, setMemo] = useState<string>('');
   const [tag, setTag] = useState<string>('#식비');
   const [spentAt, setSpentAt] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const formatDateForInput = (isoStr?: string) => {
     if (!isoStr) return '';
@@ -35,7 +41,7 @@ export default function EditExpenseModal({ isOpen, onClose, expense }: EditExpen
     }
   }, [expense]);
 
-  if (!isOpen || !expense) return null;
+  if (!isOpen || !expense || !mounted) return null;
 
   const defaultTags = [
     '#방어성공',
@@ -91,9 +97,9 @@ export default function EditExpenseModal({ isOpen, onClose, expense }: EditExpen
 
   const accountName = currentUser === 'unni' ? '다운 🎀' : '다영 🐻';
 
-  return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-end justify-center animate-fade-in sm:p-4">
-      <div className="bg-white border-t sm:border border-slate-200 rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl animate-slide-up relative max-h-[90vh] overflow-y-auto">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-end justify-center animate-fade-in sm:p-4">
+      <div className="bg-white border-t sm:border border-slate-200 rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 pb-10 space-y-5 shadow-2xl animate-slide-up relative max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-xl">✏️</span>
@@ -206,6 +212,7 @@ export default function EditExpenseModal({ isOpen, onClose, expense }: EditExpen
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

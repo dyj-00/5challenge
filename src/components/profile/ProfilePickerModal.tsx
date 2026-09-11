@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useChallengeContext } from '@/context/ChallengeContext';
 import { UserRole } from '@/types';
 import { PRESET_ACCOUNTS } from '@/lib/supabase';
@@ -12,16 +13,21 @@ interface ProfilePickerModalProps {
 
 export default function ProfilePickerModal({ isOpen, onClose }: ProfilePickerModalProps) {
   const { currentUser, setCurrentUser } = useChallengeContext();
+  const [mounted, setMounted] = useState<boolean>(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   const handleSelect = (role: UserRole) => {
     setCurrentUser(role);
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
       <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-sm p-6 space-y-5 shadow-2xl relative">
         <button
           onClick={onClose}
@@ -75,6 +81,7 @@ export default function ProfilePickerModal({ isOpen, onClose }: ProfilePickerMod
           닫기
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

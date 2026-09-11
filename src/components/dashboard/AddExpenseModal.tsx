@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useChallengeContext } from '@/context/ChallengeContext';
 
 interface AddExpenseModalProps {
@@ -11,12 +12,17 @@ interface AddExpenseModalProps {
 export default function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
   const { addExpense, currentUser } = useChallengeContext();
 
+  const [mounted, setMounted] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>('');
   const [memo, setMemo] = useState<string>('');
   const [tag, setTag] = useState<string>('#식비');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
 
   const defaultTags = ['#방어성공', '#어쩔수없었음', '#충동구매반성', '#식비', '#생필품', '#무지출', '#커피/디저트'];
 
@@ -45,9 +51,9 @@ export default function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProp
 
   const accountName = currentUser === 'unni' ? '다운 🎀' : '다영 🐻';
 
-  return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-end justify-center animate-fade-in sm:p-4">
-      <div className="bg-white border-t sm:border border-slate-200 rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl animate-slide-up relative">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-end justify-center animate-fade-in sm:p-4">
+      <div className="bg-white border-t sm:border border-slate-200 rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 pb-10 space-y-5 shadow-2xl animate-slide-up relative">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-xl">💳</span>
@@ -138,6 +144,7 @@ export default function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProp
           </button>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
