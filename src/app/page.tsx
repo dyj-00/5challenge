@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import MobileContainer from '@/components/layout/MobileContainer';
 import ModeToggleTab from '@/components/dashboard/ModeToggleTab';
+import WeekNavigator from '@/components/dashboard/WeekNavigator';
 import DualGaugeCard from '@/components/dashboard/DualGaugeCard';
 import TimelineFeed from '@/components/dashboard/TimelineFeed';
 import AddExpenseModal from '@/components/dashboard/AddExpenseModal';
@@ -26,6 +27,9 @@ export default function Home() {
         <div className="space-y-4 animate-fade-in">
           {/* Top Mode Toggle Tab [ 👤 혼자 도전 | 👭 자매 챌린지 ] */}
           <ModeToggleTab />
+
+          {/* Week Navigation Bar */}
+          <WeekNavigator />
 
           {/* Gauge Card (Solo / Duo View) */}
           <DualGaugeCard />

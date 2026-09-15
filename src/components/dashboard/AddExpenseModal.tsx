@@ -10,7 +10,7 @@ interface AddExpenseModalProps {
 }
 
 export default function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProps) {
-  const { addExpense, currentUser } = useChallengeContext();
+  const { addExpense, currentUser, selectedCycleIndex, currentCycleIndex, challenge, expenses } = useChallengeContext();
 
   const [mounted, setMounted] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>('');
@@ -23,6 +23,8 @@ export default function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProp
   }, []);
 
   if (!isOpen || !mounted) return null;
+
+  const isPastWeek = selectedCycleIndex < currentCycleIndex;
 
   const defaultTags = ['#방어성공', '#어쩔수없었음', '#충동구매반성', '#식비', '#생필품', '#무지출', '#커피/디저트'];
 
@@ -54,11 +56,20 @@ export default function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProp
   return createPortal(
     <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-end justify-center animate-fade-in sm:p-4">
       <div className="bg-white border-t sm:border border-slate-200 rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 pb-10 space-y-5 shadow-2xl animate-slide-up relative">
+        {isPastWeek && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-xs text-amber-800 font-bold flex items-center gap-1.5">
+            <span>📅</span>
+            <span>지난 {selectedCycleIndex + 1}회차 지출 내역으로 기록됩니다.</span>
+          </div>
+        )}
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-xl">💳</span>
             <div>
-              <h3 className="font-extrabold text-base text-slate-900">지출 직접 입력</h3>
+              <h3 className="font-extrabold text-base text-slate-900">
+                {isPastWeek ? `${selectedCycleIndex + 1}회차 지난 지출 추가` : '지출 직접 입력'}
+              </h3>
               <p className="text-[11px] text-emerald-600 font-bold">
                 {accountName} 데이터로 저장됩니다
               </p>

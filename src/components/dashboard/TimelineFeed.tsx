@@ -2,21 +2,23 @@
 
 import React, { useState } from 'react';
 import { useChallengeContext } from '@/context/ChallengeContext';
-import { calculatePacemakerMetrics } from '@/lib/pacemaker';
+import { calculatePacemakerMetrics, getCycleDateRange } from '@/lib/pacemaker';
 import { Expense } from '@/types';
 import TimelineItem from './TimelineItem';
 import EditExpenseModal from './EditExpenseModal';
 
 export default function TimelineFeed() {
-  const { expenses, reactions, challenge, currentUser, viewMode } = useChallengeContext();
+  const { expenses, reactions, challenge, currentUser, viewMode, selectedCycleIndex } = useChallengeContext();
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
-  const metrics = calculatePacemakerMetrics(challenge, expenses, currentUser);
+  const metrics = calculatePacemakerMetrics(challenge, expenses, currentUser, selectedCycleIndex);
+  const { cycleStartDate, cycleNextStartDate } = getCycleDateRange(challenge, selectedCycleIndex);
 
-  // Filter expenses for current week challenge cycle
-  const currentExpenses = expenses.filter(
-    (exp) => new Date(exp.spent_at) >= metrics.startDate
-  );
+  // Filter expenses strictly for the selected 7-day cycle date range
+  const currentExpenses = expenses.filter((exp) => {
+    const d = new Date(exp.spent_at || exp.created_at || Date.now());
+    return d >= cycleStartDate && d < cycleNextStartDate;
+  });
 
   // In Solo mode, show ONLY current user's expenses!
   // In Duo mode, show combined timeline (mine + sister's)!
@@ -26,6 +28,13 @@ export default function TimelineFeed() {
 
   return (
     <div className="space-y-3">
+      {metrics.isPastWeek && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 text-xs text-amber-800 flex items-center gap-2 font-bold">
+          <span>ℹ️</span>
+          <span>지난 주차 ({metrics.cycleIndex + 1}회차: {metrics.cycleRangeText}) 기록을 조회 중입니다.</span>
+        </div>
+      )}
+
       <div className="flex items-center justify-between px-1">
         <h3 className="font-extrabold text-sm text-slate-800 flex items-center gap-1.5">
           <span>📜</span>
@@ -45,7 +54,7 @@ export default function TimelineFeed() {
               <>
                 하단 [+] 버튼을 눌러
                 <br />
-                나의 첫 지출이나 #무지출 내역을 기록해 보세요.
+                지출이나 #무지출 내역을 기록해 보세요.
               </>
             ) : (
               '하단 [+] 버튼을 눌러 지출 내역을 공유해 보세요.'

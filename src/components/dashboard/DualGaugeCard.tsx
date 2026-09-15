@@ -6,7 +6,7 @@ import { calculatePacemakerMetrics, formatCurrency } from '@/lib/pacemaker';
 import { UserRole } from '@/types';
 
 export default function DualGaugeCard() {
-  const { challenge, expenses, currentUser, viewMode } = useChallengeContext();
+  const { challenge, expenses, currentUser, viewMode, selectedCycleIndex } = useChallengeContext();
   const isDuoView = viewMode === 'duo';
   const [mounted, setMounted] = React.useState(false);
 
@@ -14,14 +14,14 @@ export default function DualGaugeCard() {
     setMounted(true);
   }, []);
 
-  // Compute metrics for current logged-in user
-  const myMetrics = calculatePacemakerMetrics(challenge, expenses, currentUser);
+  // Compute metrics for current logged-in user with selectedCycleIndex
+  const myMetrics = calculatePacemakerMetrics(challenge, expenses, currentUser, selectedCycleIndex);
 
-  // Compute metrics for sister in Duo Mode
+  // Compute metrics for sister in Duo Mode with selectedCycleIndex
   const sisterRole: UserRole = currentUser === 'unni' ? 'dongsaeng' : 'unni';
   const sisterName = sisterRole === 'unni' ? '다운' : '다영';
   const sisterEmoji = sisterRole === 'unni' ? '🎀' : '🐻';
-  const sisterMetrics = calculatePacemakerMetrics(challenge, expenses, sisterRole);
+  const sisterMetrics = calculatePacemakerMetrics(challenge, expenses, sisterRole, selectedCycleIndex);
 
   const myRoleName = currentUser === 'unni' ? '다운(나)' : '다영(나)';
   const myEmoji = currentUser === 'unni' ? '🎀' : '🐻';
@@ -38,10 +38,10 @@ export default function DualGaugeCard() {
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <h2 className="font-extrabold text-base text-slate-900 whitespace-nowrap">
-                {myMetrics.elapsedDays}일차 소비 페이스
+                {myMetrics.cycleIndex + 1}회차 ({myMetrics.isPastWeek ? '7일간 정산' : `${myMetrics.elapsedDays}일차`})
               </h2>
               <span className="text-[13px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
-                오늘 {myMetrics.todayFormatted} ({myMetrics.todayDayOfWeekShort})
+                {myMetrics.isCurrentWeek ? `오늘 ${myMetrics.todayFormatted} (${myMetrics.todayDayOfWeekShort})` : '지난 주차'}
               </span>
             </div>
             <div className="text-xs text-slate-500 font-medium mt-1 space-y-0.5">
@@ -51,16 +51,28 @@ export default function DualGaugeCard() {
           </div>
         </div>
 
-        {/* Global Pace Badge */}
-        <div className={`px-2.5 py-1 rounded-full text-xs font-extrabold flex items-center gap-1 border whitespace-nowrap flex-shrink-0 ${myMetrics.paceStatus === 'safe'
-          ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-          : myMetrics.paceStatus === 'warning'
-            ? 'bg-amber-50 border-amber-200 text-amber-700'
-            : 'bg-rose-50 border-rose-200 text-rose-700'
+        {/* Global Pace Badge or Past Week Result Badge */}
+        {myMetrics.isPastWeek ? (
+          <div className={`px-2.5 py-1 rounded-full text-xs font-black flex items-center gap-1 border whitespace-nowrap flex-shrink-0 ${
+            myMetrics.isSuccess
+              ? 'bg-emerald-100 border-emerald-300 text-emerald-800'
+              : 'bg-rose-100 border-rose-300 text-rose-800'
           }`}>
-          <span>{myMetrics.statusEmoji}</span>
-          <span>{myMetrics.paceStatus === 'safe' ? '안전' : myMetrics.paceStatus === 'warning' ? '주의' : '위험'}</span>
-        </div>
+            <span>{myMetrics.statusEmoji}</span>
+            <span>{myMetrics.resultBadgeText}</span>
+          </div>
+        ) : (
+          <div className={`px-2.5 py-1 rounded-full text-xs font-extrabold flex items-center gap-1 border whitespace-nowrap flex-shrink-0 ${
+            myMetrics.paceStatus === 'safe'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+              : myMetrics.paceStatus === 'warning'
+                ? 'bg-amber-50 border-amber-200 text-amber-700'
+                : 'bg-rose-50 border-rose-200 text-rose-700'
+          }`}>
+            <span>{myMetrics.statusEmoji}</span>
+            <span>{myMetrics.paceStatus === 'safe' ? '안전' : myMetrics.paceStatus === 'warning' ? '주의' : '위험'}</span>
+          </div>
+        )}
       </div>
 
       {/* Mode View Render */}

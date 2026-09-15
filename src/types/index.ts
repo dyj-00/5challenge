@@ -48,9 +48,13 @@ export interface Reaction {
 export type PaceStatus = 'safe' | 'warning' | 'danger';
 
 export interface PacemakerMetrics {
+  cycleIndex: number;
+  currentCycleIndex: number;
+  isCurrentWeek: boolean;
+  isPastWeek: boolean;
   elapsedDays: number; // 1 to 7
   totalBudget: number; // e.g. 50000
-  totalSpent: number; // Sum of expenses for user in current cycle
+  totalSpent: number; // Sum of expenses for user in cycle
   remainingBudget: number; // totalBudget - totalSpent
   dailyTargetBudget: number; // totalBudget / 7
   targetRemainingBudget: number; // Ideal remaining budget at current elapsed day
@@ -59,8 +63,11 @@ export interface PacemakerMetrics {
   paceStatus: PaceStatus;
   statusMessage: string;
   statusEmoji: string;
+  resultBadgeText: string;
+  isSuccess: boolean;
   // Date & day of week properties
   startDate: Date;
+  endDate: Date;
   startDateFormatted: string;
   startDayOfWeekName: string;
   startDayOfWeekShort: string;

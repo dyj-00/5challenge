@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Challenge, Expense, Reaction, UserRole, ViewMode } from '@/types';
 import { isSupabaseConfigured, LocalStore, PRESET_ACCOUNTS, supabase } from '@/lib/supabase';
+import { getCurrentCycleIndex, getCycleDateRange } from '@/lib/pacemaker';
 import confetti from 'canvas-confetti';
 
 interface ChallengeContextType {
@@ -14,7 +15,13 @@ interface ChallengeContextType {
   expenses: Expense[];
   reactions: Reaction[];
   isLoading: boolean;
-  addExpense: (expenseData: { amount: number; memo: string; tag: string }) => Promise<void>;
+  selectedCycleIndex: number;
+  currentCycleIndex: number;
+  setSelectedCycleIndex: (index: number) => void;
+  resetToCurrentWeek: () => void;
+  isCurrentWeek: boolean;
+  isPastWeek: boolean;
+  addExpense: (expenseData: { amount: number; memo: string; tag: string; spent_at?: string }) => Promise<void>;
   updateExpense: (
     id: string,
     updatedData: { amount: number; memo: string; tag: string; spent_at?: string }
@@ -35,6 +42,23 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Selected week cycle index state
+  const currentIdx = getCurrentCycleIndex(challenge);
+  const [selectedCycleIndex, setSelectedCycleIndex] = useState<number>(currentIdx);
+
+  // Synchronize initial cycle index when challenge loads
+  useEffect(() => {
+    setSelectedCycleIndex(getCurrentCycleIndex(challenge));
+  }, [challenge.current_start_date]);
+
+  const currentCycleIndex = getCurrentCycleIndex(challenge);
+  const isCurrentWeek = selectedCycleIndex === currentCycleIndex;
+  const isPastWeek = selectedCycleIndex < currentCycleIndex;
+
+  const resetToCurrentWeek = () => {
+    setSelectedCycleIndex(getCurrentCycleIndex(challenge));
+  };
 
   // Trigger celebratory confetti
   const triggerConfetti = () => {
@@ -176,11 +200,26 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
     amount,
     memo,
     tag,
+    spent_at,
   }: {
     amount: number;
     memo: string;
     tag: string;
+    spent_at?: string;
   }) => {
+    // Determine spent_at timestamp
+    let targetSpentAt = spent_at;
+    if (!targetSpentAt) {
+      if (selectedCycleIndex < currentCycleIndex) {
+        // If viewing past week, default spent_at to 12:00 PM on that cycle's start date
+        const { cycleStartDate } = getCycleDateRange(challenge, selectedCycleIndex);
+        const noonInCycle = new Date(cycleStartDate.getTime() + 12 * 3600 * 1000);
+        targetSpentAt = noonInCycle.toISOString();
+      } else {
+        targetSpentAt = new Date().toISOString();
+      }
+    }
+
     const newExpense: Expense = {
       id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'exp-' + Date.now(),
       challenge_id: challenge.id,
@@ -188,7 +227,7 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
       amount,
       memo: memo.trim() || '지출',
       tag: tag || '#식비',
-      spent_at: new Date().toISOString(),
+      spent_at: targetSpentAt,
       created_at: new Date().toISOString(),
     };
 
@@ -361,6 +400,12 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
         expenses,
         reactions,
         isLoading,
+        selectedCycleIndex,
+        currentCycleIndex,
+        setSelectedCycleIndex,
+        resetToCurrentWeek,
+        isCurrentWeek,
+        isPastWeek,
         addExpense,
         updateExpense,
         deleteExpense,
