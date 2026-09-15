@@ -211,10 +211,17 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
     let targetSpentAt = spent_at;
     if (!targetSpentAt) {
       if (selectedCycleIndex < currentCycleIndex) {
-        // If viewing past week, default spent_at to 12:00 PM on that cycle's start date
-        const { cycleStartDate } = getCycleDateRange(challenge, selectedCycleIndex);
-        const noonInCycle = new Date(cycleStartDate.getTime() + 12 * 3600 * 1000);
-        targetSpentAt = noonInCycle.toISOString();
+        // If viewing past week, set spent_at to 11:59:59 PM (23:59:59) on the last day of that cycle
+        const { cycleEndDate } = getCycleDateRange(challenge, selectedCycleIndex);
+        const lastDayNight = new Date(
+          cycleEndDate.getFullYear(),
+          cycleEndDate.getMonth(),
+          cycleEndDate.getDate(),
+          23,
+          59,
+          59
+        );
+        targetSpentAt = lastDayNight.toISOString();
       } else {
         targetSpentAt = new Date().toISOString();
       }

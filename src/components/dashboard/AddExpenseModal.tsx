@@ -59,7 +59,7 @@ export default function AddExpenseModal({ isOpen, onClose }: AddExpenseModalProp
         {isPastWeek && (
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-xs text-amber-800 font-bold flex items-center gap-1.5">
             <span>📅</span>
-            <span>지난 {selectedCycleIndex + 1}회차 지출 내역으로 기록됩니다.</span>
+            <span>지난 {selectedCycleIndex + 1}회차 지출 내역으로 기록됩니다 (마지막날 오후 11:59 저장).</span>
           </div>
         )}
 
